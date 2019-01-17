@@ -1,0 +1,8 @@
+{
+    "require": {
+        "symfony/security": "^4.2"
+    },
+    "require-dev": {
+        "symfony/profiler-pack": "^1.0"
+    }
+}
