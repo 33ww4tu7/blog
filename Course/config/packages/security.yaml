@@ -11,14 +11,18 @@ security:
                 class: App\Entity\User
                 property: email
     firewalls:
+        
         dev:
             pattern: ^/(_(profiler|wdt)|css|images|js)/
             security: false
+                
+                   
         main:
-            anonymous: ~
-
+            anonymous: ~      
             # activate different ways to authenticate
-
+            logout:
+                path:   app_logout
+                target: /
             http_basic: ~
             guard:
                 authenticators:
@@ -32,6 +36,11 @@ security:
 
     # Easy way to control access for large sections of your site
     # Note: Only the *first* access control that matches will be used
+    role_hierarchy:
+        ROLE_BLOGGER: ROLE_USER
+        ROLE_ADMIN: ROLE_BLOGGER   
+
     access_control:
         - { path: ^/admin, roles: ROLE_ADMIN }
-        # - { path: ^/profile, roles: ROLE_USER }
+        - { path: ^/bloger, roles: ROLE_BLOGGER }
+        - { path: ^/authorized, roles: ROLE_USER}

@@ -1,16 +1,12 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: Павел
- * Date: 16.01.2019
- * Time: 19:13
- */
+
 
 namespace App\Controller;
 
 
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 
 class HomeController extends AbstractController
 {
@@ -19,8 +15,14 @@ class HomeController extends AbstractController
      */
     public function home()
     {
-
-
         return $this->render('home.html.twig');
+    }
+
+    /**
+     * @Route("/aa", name="auth")
+     */
+    public function auth()
+    {
+        return $this->render('auth.html.twig');
     }
 }
