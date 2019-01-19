@@ -52,7 +52,7 @@
                 {% for post in posts %}
                     {%  if loop.index < 6 %}
                 <div class="post-preview">
-                    <a href="{{ path('post_show', {'id': post.id}) }}">
+                    <a href="{{ path('post_show', {'id': post.id, 'user_id': post.user.id}) }}">
                         <h2 class="post-title">
                             {{ post.header }}
                         </h2>
@@ -61,7 +61,7 @@
                         </h3>
                     </a>
                     <p class="post-meta">Posted by
-                        <a href="#">{{ post.author }}</a>
+                        <a href = "{{ path('user_show', {'id': post.user.id}) }}">{{ post.author }}</a>
                         on September 24, 2018</p>
                     {{ post.tags }}
                 </div>
