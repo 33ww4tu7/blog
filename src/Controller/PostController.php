@@ -58,7 +58,7 @@ class PostController extends AbstractController
     }
 
     /**
-     * @Route("/{id}", name="post_show", methods={"GET"})
+     * @Route("/show/{id}", name="post_show", methods={"GET"})
      */
     public function show(Post $post): Response
     {
@@ -68,7 +68,7 @@ class PostController extends AbstractController
     }
 
     /**
-     * @Route("/{id}/edit", name="post_edit", methods={"GET","POST"})
+     * @Route("/edit/{id}/edit", name="post_edit", methods={"GET","POST"})
      */
     public function edit(Request $request, Post $post): Response
     {
@@ -94,7 +94,7 @@ class PostController extends AbstractController
     }
 
     /**
-     * @Route("/{id}", name="post_delete", methods={"DELETE"})
+     * @Route("/delete/{id}", name="post_delete", methods={"DELETE"})
      */
     public function delete(Request $request, Post $post): Response
     {

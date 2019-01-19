@@ -3,13 +3,11 @@
 {% block title %}New Post{% endblock %}
 
 {% block body %}
-<form method="post">
     <h1>Create new Post</h1>
     <label for="inputHeader" class="sr-only">Header</label>
     <input type="text" name="header" id="inputHeader" class= "form-control"  placeholder="Header" required autofocus>
     <label for="inputBody" class="sr-only">Body</label>
     <input type="text" name="body" id="inputBody" class="form-control" placeholder="Body" required>
-</form>
     {{ include('post/_form.html.twig') }}
 
     <a href="{{ path('post_index') }}">back to list</a>

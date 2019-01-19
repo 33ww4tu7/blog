@@ -28,7 +28,8 @@ security:
                 authenticators:
                     - App\Security\LoginFormAuthenticator
                     - App\Security\UserAuthenticator
-                entry_point: App\Security\UserAuthenticator
+                    - App\Security\AppAuthenticator
+                entry_point: App\Security\LoginFormAuthenticator
             # https://symfony.com/doc/current/security.html#a-configuring-how-your-users-will-authenticate
 
             # form_login: true
@@ -42,5 +43,5 @@ security:
 
     access_control:
         - { path: ^/admin, roles: ROLE_ADMIN }
-        - { path: ^/bloger, roles: ROLE_BLOGGER }
+       # - { path: ^/bloger, roles: ROLE_BLOGGER }
         - { path: ^/authorized, roles: ROLE_USER}

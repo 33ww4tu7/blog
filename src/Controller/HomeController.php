@@ -4,9 +4,10 @@
 namespace App\Controller;
 
 
+use App\Repository\PostRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 
 class HomeController extends AbstractController
 {
@@ -19,10 +20,12 @@ class HomeController extends AbstractController
     }
 
     /**
-     * @Route("/aa", name="auth")
+     * @Route("/authorized", name="auth")
      */
-    public function auth()
+    public function index(PostRepository $postRepository): Response
     {
-        return $this->render('auth.html.twig');
+        return $this->render('auth.html.twig', [
+            'posts' => $postRepository->findAll(),
+        ]);
     }
 }
