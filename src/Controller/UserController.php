@@ -56,16 +56,24 @@ class UserController extends AbstractController
     {
         $userId = null !== $this->getUser() ? $this->getUser()->getId() : null;
         if(!$userId){
-            $currentUser = 'anon';
+            $interactTag = ' <span class="subheading"> <a href="">Sign up </a> or <a href="">login </a>  to interact with this user</span>';
         } elseif ($userId==$user->getId()){
-            $currentUser = 'owner';
+            $interactTag = '<a class="btn btn-primary float-right"
+                               href="#">Edit</a>\'';
         } else {
-            $currentUser = 'other';
+            $currentUser = $this->getUser();
+            if(!in_array($user, $currentUser->getFollowing()->toArray()))
+                $interactTag = '<a class="btn btn-primary"
+                               href="#" id="sosat">Unsubscribe</a>';
+            else{
+                $interactTag = '<a class="btn btn-primary"
+                               href="#" id="sosat">Subscribe</a>';
+            }
         }
         return $this->render('user/show.html.twig', [
             'user' => $user,
             'posts' => $user -> getPosts(),
-            'current_user' => $currentUser
+            'interact_tag' => $interactTag
         ]);
     }
 
