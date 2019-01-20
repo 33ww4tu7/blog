@@ -26,7 +26,7 @@ class HomeController extends AbstractController
     public function index(PostRepository $postRepository): Response
     {
         return $this->render('auth.html.twig', [
-            'posts' => $postRepository->findAll(),
+            'posts' => array_reverse($postRepository->findAll()),
         ]);
     }
 }

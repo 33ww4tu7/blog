@@ -3,40 +3,91 @@
 {% block title %}User{% endblock %}
 
 {% block body %}
-    <h1>User</h1>
 
-    <table class="table">
-        <tbody>
-            <tr>
-                <th>Id</th>
-                <td>{{ user.id }}</td>
-            </tr>
-            <tr>
-                <th>Email</th>
-                <td>{{ user.email }}</td>
-            </tr>
-            <tr>
-                <th>Roles</th>
-                <td>{{ user.roles ? user.roles|json_encode : '' }}</td>
-            </tr>
-            <tr>
-                <th>Password</th>
-                <td>{{ user.password }}</td>
-            </tr>
-            <tr>
-                <th>Name</th>
-                <td>{{ user.name }}</td>
-            </tr>
-            <tr>
-                <th>Surname</th>
-                <td>{{ user.surname }}</td>
-            </tr>
-        </tbody>
-    </table>
+        <nav class="navbar navbar-expand-lg navbar-light fixed-top" id="mainNav">
+            <div class="container">
+                {% if is_granted('ROLE_USER') %}
+                    <a class="navbar-brand" href="{{ path('auth') }}">Hello, {{ app.user.name }}!</a>
+                {% endif %}
+                {% if is_granted('ROLE_ADMIN') %}
+                    <a class="navbar-brand" href="/admin">Admin panel</a>
+                {% endif %}
+                <a class="navbar-brand" href="{{ path('home') }}">Logout</a>
+                <div class="collapse navbar-collapse" id="navbarResponsive">
+                    <ul class="navbar-nav ml-auto">
+                        {% if is_granted('ROLE_BLOGGER') %}
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ path('post_new') }}">New Post</a>
+                            </li>
+                        {% endif %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="about.html">About</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="post.html">Sample Post</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="../contact.html">Contact</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+        <header class="masthead" style="background-image: url({{ asset('/public/uploads/images/user/' ~ user.image )}})">
+            <div class="overlay"></div>
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-8 col-md-10 mx-auto">
+                        <div class="site-heading">
+                            <h1>{{ user.name }}</h1>
+                            <span class="subheading">{{ user.surname }}</span>
+                            {% if current_user == 'owner' %}
+                            <span class="subheading">Edit</span>
+                            {% elseif current_user == 'other' %}
+                            <span class="subheading"> <a href="">Subscribe</a></span>
+                            {% else %}
+                            <span class="subheading">Sign up or login to interact with this user</span>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </header>
 
-    <a href="{{ path('user_index') }}">back to list</a>
 
-    <a href="{{ path('user_edit', {'id': user.id}) }}">edit</a>
+        <!-- Main Content -->
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 col-md-10 mx-auto">
+                    {% for post in posts %}
+                            <div class="post-preview">
+                                <a href="{{ path('post_show', {'id': post.id, 'user_id': post.user.id}) }}">
+                                    <h2 class="post-title">
+                                        {{ post.header }}
+                                    </h2>
+                                    <h3 class="post-subtitle">
+                                        {{ post.body }}
+                                    </h3>
+                                </a>
+                                <p class="post-meta">Posted by
+                                    <a href = "{{ path('user_show', {'id': post.user.id}) }}">{{ post.author }}</a>
+                                    on September 24, 2018</p>
+                                {{ post.tags }}
+                            </div>
+                    {% else %}
+                        <tr>
+                            <td colspan="6">no records found</td>
+                        </tr>
+                    {% endfor %}
 
-    {{ include('user/_delete_form.html.twig') }}
-{% endblock %}
+                    <hr>
+                    <!-- Pager -->
+                    <div class="clearfix">
+                        <a class="btn btn-primary float-right" href="#">Older Posts &rarr;</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% endblock %}
+
+

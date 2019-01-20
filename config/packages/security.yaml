@@ -39,7 +39,7 @@ security:
     # Note: Only the *first* access control that matches will be used
     role_hierarchy:
         ROLE_BLOGGER: ROLE_USER
-        ROLE_ADMIN: ROLE_BLOGGER   
+        ROLE_ADMIN: ROLE_BLOGGER
 
     access_control:
         - { path: ^/admin, roles: ROLE_ADMIN }

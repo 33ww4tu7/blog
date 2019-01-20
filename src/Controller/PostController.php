@@ -3,19 +3,31 @@
 namespace App\Controller;
 
 use App\Entity\Post;
+use App\Entity\User;
 use App\Form\PostType;
 use App\Repository\PostRepository;
+use Doctrine\ORM\Mapping\Id;
 use phpDocumentor\Reflection\Types\String_;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
+
 
 
 class PostController extends AbstractController
 {
+    private $posts;
+
+    public function __construct(PostRepository $posts)
+    {
+        $this->posts=$posts;
+    }
     /**
      * @Route("/authorized", name="post_index", methods={"GET"})
      */
@@ -34,12 +46,10 @@ class PostController extends AbstractController
         $post = new Post();
         $post -> setAuthor( $this->getUser() -> getName());
         $post -> setUser($this->getUser());
-        //smth goes wrong
-        $post -> setHeader($request->$_POST['header']);
-        $post -> setBody($request->$_POST['body']);
+
         $form = $this->createFormBuilder($post)
-          //  ->add('header', TextType::class)
-          //  ->add('body', TextType::class)
+            ->add('header', TextType::class)
+            ->add('body', TextType::class)
             ->getForm();
         $form->handleRequest($request);
 
@@ -58,24 +68,27 @@ class PostController extends AbstractController
     }
 
     /**
-     * @Route("/show/{id}", name="post_show", methods={"GET"})
+     * @Route("/show/{id}/{user_id}", name="post_show", methods={"GET"})
      */
     public function show(Post $post): Response
     {
         return $this->render('post/show.html.twig', [
             'post' => $post,
+            'user' => $post->getUser()
         ]);
     }
 
     /**
-     * @Route("/edit/{id}/edit", name="post_edit", methods={"GET","POST"})
+     * @Route("/edit/{id}/{user_id}", name="post_edit", methods={"GET","POST"})
+     *
+     * @IsGranted("ROLE_BLOGGER")
+     * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
     public function edit(Request $request, Post $post): Response
     {
         $form = $this->createFormBuilder($post)
             ->add('header', TextType::class)
             ->add('body', TextType::class)
-            ->add('save', SubmitType::class, array('label' => 'Create Task'))
             ->getForm();
         $form->handleRequest($request);
 
@@ -84,8 +97,11 @@ class PostController extends AbstractController
 
             return $this->redirectToRoute('post_index', [
                 'id' => $post->getId(),
+                'user' => $post->getUser()
             ]);
         }
+
+
 
         return $this->render('post/edit.html.twig', [
             'post' => $post,
@@ -95,6 +111,7 @@ class PostController extends AbstractController
 
     /**
      * @Route("/delete/{id}", name="post_delete", methods={"DELETE"})
+     * @isGranted("ROLE_ADMIN", statusCode=403, message="Access denied")
      */
     public function delete(Request $request, Post $post): Response
     {

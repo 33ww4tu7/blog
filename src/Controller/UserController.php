@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Entity\Post;
 use App\Entity\User;
 use App\Form\UserType;
 use App\Repository\UserRepository;
@@ -53,8 +54,18 @@ class UserController extends AbstractController
      */
     public function show(User $user): Response
     {
+        $userId = null !== $this->getUser() ? $this->getUser()->getId() : null;
+        if(!$userId){
+            $currentUser = 'anon';
+        } elseif ($userId==$user->getId()){
+            $currentUser = 'owner';
+        } else {
+            $currentUser = 'other';
+        }
         return $this->render('user/show.html.twig', [
             'user' => $user,
+            'posts' => $user -> getPosts(),
+            'current_user' => $currentUser
         ]);
     }
 
@@ -93,4 +104,15 @@ class UserController extends AbstractController
 
         return $this->redirectToRoute('user_index');
     }
+    /**
+     * @return string
+     */
+
+
+
+    private function generateUniqueFileName()
+    {
+        return md5(uniqid());
+    }
+
 }

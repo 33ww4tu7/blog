@@ -8,7 +8,7 @@
             {% if is_granted('ROLE_ADMIN') %}
                 <a class="navbar-brand" href="/admin">Admin panel</a>
             {% endif %}
-            <a class="navbar-brand" href="/register">My profile</a>
+            <a class="navbar-brand" href="{{ path('user_show', {'id': app.user.id}) }}">My profile</a>
             <a class="navbar-brand" href="{{ path('home') }}">Logout</a>
             <div class="collapse navbar-collapse" id="navbarResponsive">
                 <ul class="navbar-nav ml-auto">
@@ -30,7 +30,7 @@
             </div>
         </div>
     </nav>
-    <header class="masthead" style="background-image: url('public/img/home-bg.jpg')">
+    <header class="masthead" style="background-image: url('/public/img/home-bg.jpg')">
         <div class="overlay"></div>
         <div class="container">
             <div class="row">
@@ -62,7 +62,7 @@
                     </a>
                     <p class="post-meta">Posted by
                         <a href = "{{ path('user_show', {'id': post.user.id}) }}">{{ post.author }}</a>
-                        on September 24, 2018</p>
+                        on {{ post.insDateTime|date("m/d/Y") }}</p>
                     {{ post.tags }}
                 </div>
                     {% endif %}

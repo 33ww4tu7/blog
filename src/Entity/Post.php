@@ -10,6 +10,11 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class Post
 {
+    public function __construct()
+    {
+        $this->setInsDateTime(new \DateTime());
+    }
+
     /**
      * @ORM\Id()
      * @ORM\GeneratedValue()
@@ -41,6 +46,11 @@ class Post
      * @ORM\ManyToOne(targetEntity="App\Entity\User", inversedBy="Post")
      */
     private $user;
+
+    /**
+     * @ORM\Column(type="datetime")
+     */
+    private $insDateTime;
 
     public function getId(): ?int
     {
@@ -103,6 +113,18 @@ class Post
     public function setUser(?User $user): self
     {
         $this->user = $user;
+
+        return $this;
+    }
+
+    public function getInsDateTime(): ?\DateTimeInterface
+    {
+        return $this->insDateTime;
+    }
+
+    public function setInsDateTime(\DateTimeInterface $insDateTime): self
+    {
+        $this->insDateTime = $insDateTime;
 
         return $this;
     }
