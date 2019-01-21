@@ -45,7 +45,7 @@ class NewPostController extends AbstractController
              $em->persist($post);
              $em->flush();
 
-                      return $this->redirectToRoute('auth');
+                      return $this->redirectToRoute('home');
         }
 
         return $this->render('new_post/index.html.twig', [

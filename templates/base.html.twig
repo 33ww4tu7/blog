@@ -19,7 +19,37 @@
         {% endblock %}
     </head>
     <body>
-
+    <nav class="navbar navbar-expand-lg navbar-light fixed-top" id="mainNav">
+        <div class="container">
+            {% if is_granted('ROLE_USER') %}
+                <a class="navbar-brand" href="{{ path('home') }}">Hello, {{ app.user.name }}!</a>
+            {% endif %}
+            {% if is_granted('ROLE_ADMIN') %}
+                <a class="navbar-brand" href="/admin">Admin panel</a>
+            {% endif %}
+            {% if is_granted('IS_AUTHENTICATED_FULLY') %}
+            <a class="navbar-brand" href="{{ path('user_show', {'id': app.user.id}) }}">My profile</a>
+            <a class="navbar-brand" href="{{ path('app_logout') }}">Logout</a>
+            {% else %}
+            <a class="navbar-brand" href="{{ path('app_register') }}">Sing up</a>
+            <a class="navbar-brand" href="{{ path('app_login') }}">Sing in</a>
+            {% endif %}
+            <div class="collapse navbar-collapse" id="navbarResponsive">
+                <ul class="navbar-nav ml-auto">
+                    {% if is_granted('ROLE_BLOGGER') %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ path('post_new') }}">New Post</a>
+                        </li>
+                    {% endif %}
+                    {% if is_granted('ROLE_USER') %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ path('pref') }}">Preferences</a>
+                        </li>
+                    {% endif %}
+                </ul>
+            </div>
+        </div>
+    </nav>
         {% block body %}{% endblock %}
 
     <hr>
@@ -69,6 +99,6 @@
             <script src="/public/js/clean-blog.min.js"></script>
         {% endblock %}
         {% block additional_scripts %}
-         {% endblock %}
+        {% endblock %}
     </body>
 </html>

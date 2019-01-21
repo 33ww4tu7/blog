@@ -15,17 +15,9 @@ class HomeController extends AbstractController
     /**
      * @Route("/", name="home")
      */
-    public function home()
-    {
-        return $this->render('home.html.twig');
-    }
-
-    /**
-     * @Route("/authorized", name="auth")
-     */
     public function index(PostRepository $postRepository): Response
     {
-        return $this->render('auth.html.twig', [
+        return $this->render('home.html.twig', [
             'posts' => array_reverse($postRepository->findAll()),
         ]);
     }

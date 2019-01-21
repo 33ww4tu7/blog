@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
+
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\PostRepository")
@@ -43,7 +45,7 @@ class Post
     private $tags;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\User", inversedBy="Post")
+     * @ORM\ManyToOne(targetEntity="App\Entity\User", inversedBy="Post", cascade={"remove"})
      */
     private $user;
 
@@ -51,6 +53,12 @@ class Post
      * @ORM\Column(type="datetime")
      */
     private $insDateTime;
+
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     * @Assert\File(mimeTypes={ "image/jpeg" })
+     */
+    private $image;
 
     public function getId(): ?int
     {
@@ -125,6 +133,18 @@ class Post
     public function setInsDateTime(\DateTimeInterface $insDateTime): self
     {
         $this->insDateTime = $insDateTime;
+
+        return $this;
+    }
+
+    public function getImage(): ?string
+    {
+        return $this->image;
+    }
+
+    public function setImage(?string $image): self
+    {
+        $this->image = $image;
 
         return $this;
     }

@@ -13,12 +13,15 @@ class UserType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('email')
-            ->add('roles')
-            ->add('password')
-            ->add('name')
-            ->add('surname')
-            ->add('image', FileType::class,['label' => 'Brochure (PDF file)'])
+            ->add('name', null, ['attr' => [
+                'class' => 'form-control', 'placeholder' => 'Name', "rows" => "15"
+            ]])
+            ->add('surname', null, ['attr' => [
+                'class' => 'form-control', 'placeholder' => 'Surname', "rows" => "15"
+            ]])
+            ->add('image', FileType::class,['data_class' => null, 'attr' => [
+                'class' => 'form-control', 'placeholder' => 'Image', "rows" => "15"
+            ]])
         ;
     }
 

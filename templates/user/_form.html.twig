@@ -1,4 +1,49 @@
-{{ form_start(form) }}
-    {{ form_widget(form) }}
-    <button class="btn">{{ button_label|default('Save') }}</button>
-{{ form_end(form) }}
+<header class="masthead" style="background-image: url('img/contact-bg.jpg')">
+    <div class="overlay"></div>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-md-10 mx-auto">
+                <div class="page-heading">
+                    <h1>Contact Me</h1>
+                    <span class="subheading">Have questions? I have answers.</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Main Content -->
+<div class="container">
+    <div class="row">
+        <div class="col-lg-8 col-md-10 mx-auto">
+            <form method="post" enctype="multipart/form-data">
+                {{ form_errors(form) }}
+                <div class="control-group">
+                    <div class="form-group floating-label-form-group controls">
+                        <label>Name</label>
+                        {{ form_widget(form.name) }}
+                    </div>
+                </div>
+                <div class="control-group">
+                    <div class="form-group floating-label-form-group controls">
+                        <label>Surname</label>
+                        {{ form_widget(form.surname) }}
+                    </div>
+                </div>
+                <div class="control-group">
+                    <div class="form-group floating-label-form-group controls">
+                        <label>Image</label>
+                        {{ form_widget(form.image) }}
+                    </div>
+                </div>
+                <div class="control-group text-center">
+                    <div class="form-group floating-label-form-group controls float-right">
+                        <button type="submit" class="btn btn-primary" id="sendMessageButton">Update</button>
+                    </div>
+                </div>
+                {{ form_widget(form._token) }}
+            </form>
+        </div>
+    </div>
+</div>
+

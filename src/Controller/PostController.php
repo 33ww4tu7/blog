@@ -12,6 +12,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\HttpFoundation\File\Exception\FileException;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -28,15 +29,6 @@ class PostController extends AbstractController
     {
         $this->posts=$posts;
     }
-    /**
-     * @Route("/authorized", name="post_index", methods={"GET"})
-     */
-    public function index(PostRepository $postRepository): Response
-    {
-        return $this->render('auth.html.twig', [
-            'posts' => $postRepository->findAll(),
-        ]);
-    }
 
     /**
      * @Route("/new", name="post_new", methods={"GET","POST"})
@@ -47,18 +39,30 @@ class PostController extends AbstractController
         $post -> setAuthor( $this->getUser() -> getName());
         $post -> setUser($this->getUser());
 
-        $form = $this->createFormBuilder($post)
-            ->add('header', TextType::class)
-            ->add('body', TextType::class)
-            ->getForm();
+        $form = $this->createForm(PostType::class);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            /** @var \Symfony\Component\HttpFoundation\File\UploadedFile $file */
+            $file = $form->get('image')->getData();
+            $fileName = $this->generateUniqueFileName().'.jpg';
+            try {
+
+                $file->move(
+                    $this->getParameter('post_photo_directory'),
+                    $fileName
+                );
+            } catch (FileException $e) {
+                // ... handle exception if something happens during file upload
+            }
+            $post->setImage($fileName);
+            $post->setHeader($form->get('header')->getData());
+            $post->setBody($form->get('body')->getData());
             $entityManager = $this->getDoctrine()->getManager();
             $entityManager->persist($post);
             $entityManager->flush();
 
-            return $this->redirectToRoute('post_index');
+            return $this->redirectToRoute('home');
         }
 
         return $this->render('post/new.html.twig', [
@@ -86,16 +90,28 @@ class PostController extends AbstractController
      */
     public function edit(Request $request, Post $post): Response
     {
-        $form = $this->createFormBuilder($post)
-            ->add('header', TextType::class)
-            ->add('body', TextType::class)
-            ->getForm();
+        $form = $this->createForm(PostType::class, $post);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            /** @var \Symfony\Component\HttpFoundation\File\UploadedFile $file */
+            $file = $form->get('image')->getData();
+            $fileName = $this->generateUniqueFileName().'.jpg';
+            try {
+
+                $file->move(
+                    $this->getParameter('post_photo_directory'),
+                    $fileName
+                );
+            } catch (FileException $e) {
+                // ... handle exception if something happens during file upload
+            }
+            $post->setImage($fileName);
+            $post->setHeader($form->get('header')->getData());
+            $post->setBody($form->get('body')->getData());
             $this->getDoctrine()->getManager()->flush();
 
-            return $this->redirectToRoute('post_index', [
+            return $this->redirectToRoute('home', [
                 'id' => $post->getId(),
                 'user' => $post->getUser()
             ]);
@@ -121,6 +137,11 @@ class PostController extends AbstractController
             $entityManager->flush();
         }
 
-        return $this->redirectToRoute('post_index');
+        return $this->redirectToRoute('home');
+    }
+
+    private function generateUniqueFileName()
+    {
+        return md5(uniqid());
     }
 }

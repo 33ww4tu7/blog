@@ -52,6 +52,18 @@ class RegistrationController extends AbstractController
                     $form->get('plainPassword')->getData()
                 )
             );
+            if ($form->get('isBlogger')->getData() == true)
+            {
+                $user->setRoles(
+                    ['ROLE_BLOGGER']
+                );
+            }
+            else
+                {
+                $user->setRoles(['ROLE_USER']);
+            }
+
+
 
             $entityManager = $this->getDoctrine()->getManager();
             $entityManager->persist($user);

@@ -3,46 +3,20 @@
 {% block title %}User{% endblock %}
 
 {% block body %}
-
-    <nav class="navbar navbar-expand-lg navbar-light fixed-top" id="mainNav">
-        <div class="container">
-            {% if is_granted('ROLE_USER') %}
-                <a class="navbar-brand" href="{{ path('auth') }}">Hello, {{ app.user.name }}!</a>
-            {% endif %}
-            {% if is_granted('ROLE_ADMIN') %}
-                <a class="navbar-brand" href="/admin">Admin panel</a>
-            {% endif %}
-            <a class="navbar-brand" href="{{ path('home') }}">Logout</a>
-            <div class="collapse navbar-collapse" id="navbarResponsive">
-                <ul class="navbar-nav ml-auto">
-                    {% if is_granted('ROLE_BLOGGER') %}
-                        <li class="nav-item">
-                            <a class="nav-link" href="{{ path('post_new') }}">New Post</a>
-                        </li>
-                    {% endif %}
-                    <li class="nav-item">
-                        <a class="nav-link" href="about.html">About</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="post.html">Sample Post</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="../contact.html">Contact</a>
-                    </li>
-                </ul>
-            </div>
-        </div>
-    </nav>
-    <header class="masthead" style="background-image: url({{ asset('/public/uploads/images/user/' ~ user.image ) }})">
-        <div class="overlay"></div>
-        <div class="container">
-            <div class="row">
-                <div class="col-lg-8 col-md-10 mx-auto">
-                    <div class="site-heading">
-                        <h1>{{ user.name }}</h1>
-                        <span class="subheading">{{ user.surname }}</span>
-                        <br>
+<header class="masthead" style="background-image: url({{ asset('/public/uploads/images/user/' ~ user.image ) }})">
+    <div class="overlay"></div>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-md-10 mx-auto">
+                <div class="site-heading">
+                    <h1>{{ user.name }}</h1>
+                    <span class="subheading">{{ user.surname }}</span>
+                    <br>
+                    {% if interact_tag == 'edit' %}
+                    <a class="btn btn-primary" href="{{ path('user_edit', {'id': user.id})}}">Edit</a>
+                        {% else %}
                            {{ interact_tag|raw }}
+                        {% endif %}
                     </div>
                 </div>
             </div>
@@ -84,29 +58,36 @@
         </div>
     </div>
 
-{% endblock %}
+    {% endblock %}
     {% block additional_scripts %}
-        <script>
-            $('#sosat').click(function () {
-                updateFollowing();
-                return false;
-            });
+    {% if is_granted('IS_AUTHENTICATED_FULLY') %}
+    <script>
+        $('#follow_options').click(function () {
+            updateFollowing();
+            return false;
+        });
 
-            function updateFollowing() {
-                var dataSend = {"follower_id": {{ app.user.id }}, "user_for_follow_id": {{ user.id }}};
-                jQuery.ajax({
-                    url: 'http://course-project.local/ajax',
-                    type: "POST",
-                    data: dataSend,
-                    success: function () {
-                        console.log(dataSend);
-                    },
-                    error: function () {
-                        console.log('ne sosat + ne lezhat');
-                        alert("fail");
+        function updateFollowing() {
+            let dataSend = {"follower_id": {{ app.user.id }}, "user_for_follow_id": {{ user.id }}};
+            jQuery.ajax({
+                url: 'http://course-project.local/ajax',
+                type: "POST",
+                data: dataSend,
+                success: function () {
+                    let btn_text = document.getElementById('follow_options');
+                    if (btn_text.firstChild.data === 'Subscribe'){
+                        btn_text.firstChild.data = 'Unsubscribe';
+                    } else if ( btn_text.firstChild.data === 'Unsubscribe') {
+                        btn_text.firstChild.data = 'Subscribe';
                     }
-                });
-            }
-        </script>
-{% endblock %}
+                },
+                error: function () {
+                    console.log('Something went wrong!');
+                    alert("fail");
+                }
+            });
+        }
+    </script>
+    {% endif %}
+    {% endblock %}
 

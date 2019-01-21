@@ -56,18 +56,17 @@ class UserController extends AbstractController
     {
         $userId = null !== $this->getUser() ? $this->getUser()->getId() : null;
         if(!$userId){
-            $interactTag = ' <span class="subheading"> <a href="">Sign up </a> or <a href="">login </a>  to interact with this user</span>';
+            $interactTag = " <span class=\"subheading\"> <a href=\"/register\">Sign up </a> or <a href=\"\">login </a>  to interact with this user</span>";
         } elseif ($userId==$user->getId()){
-            $interactTag = '<a class="btn btn-primary float-right"
-                               href="#">Edit</a>\'';
+            $interactTag = 'edit';
         } else {
             $currentUser = $this->getUser();
-            if(!in_array($user, $currentUser->getFollowing()->toArray()))
+            if(in_array($user, $currentUser->getFollowing()->toArray()))
                 $interactTag = '<a class="btn btn-primary"
-                               href="#" id="sosat">Unsubscribe</a>';
+                               href="#" id="follow_options">Unsubscribe</a>';
             else{
                 $interactTag = '<a class="btn btn-primary"
-                               href="#" id="sosat">Subscribe</a>';
+                               href="#" id="follow_options">Subscribe</a>';
             }
         }
         return $this->render('user/show.html.twig', [
@@ -110,7 +109,7 @@ class UserController extends AbstractController
             $entityManager->flush();
         }
 
-        return $this->redirectToRoute('user_index');
+        return $this->redirectToRoute('home');
     }
     /**
      * @return string
