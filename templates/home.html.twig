@@ -6,8 +6,8 @@
             <div class="row">
                 <div class="col-lg-8 col-md-10 mx-auto">
                     <div class="site-heading">
-                        <h1>Maybe I add the text</h1>
-                        <span class="subheading">and here</span>
+                        <h1>You are Welcome!</h1>
+                        <span class="subheading">Please sign ip or login for more functionally</span>
                     </div>
                 </div>
             </div>
@@ -19,18 +19,18 @@
         <div class="row">
             <div class="col-lg-8 col-md-10 mx-auto">
                 {% for post in posts %}
-                    {%  if loop.index < 6 %}
+                    {%  if loop.index < 6%}
                 <div class="post-preview">
                     <a href="{{ path('post_show', {'id': post.id, 'user_id': post.user.id}) }}">
                         <h2 class="post-title">
-                            {{ post.header }}
+                            {{ post.header | length > 50 ? post.header|slice(0, 50) ~ '...' : post.header}}
                         </h2>
                         <h3 class="post-subtitle">
-                            {{ post.body }}
+                           {{ post.body | length > 100 ? post.body|slice(0, 100) ~ '...' : post.body }}
                         </h3>
                     </a>
                     <p class="post-meta">Posted by
-                        <a href = "{{ path('user_show', {'id': post.user.id}) }}">{{ post.author }}</a>
+                        <a href = "{{ path('user_show', {'id': post.user.id}) }}">{{ post.user.name }}</a>
                         on {{ post.insDateTime|date("m/d/Y") }}</p>
                     {{ post.tags }}
                 </div>
@@ -44,7 +44,7 @@
                 <hr>
                 <!-- Pager -->
                 <div class="clearfix">
-                    <a class="btn btn-primary float-right" href="#">Older Posts &rarr;</a>
+                    <a class="btn btn-primary float-right" href="{{ path('post_all') }}">Older Posts &rarr;</a>
                 </div>
             </div>
         </div>

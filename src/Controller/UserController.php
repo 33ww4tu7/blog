@@ -6,7 +6,9 @@ use App\Entity\Post;
 use App\Entity\User;
 use App\Form\UserType;
 use App\Repository\UserRepository;
+use mysql_xdevapi\Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\File\Exception\FileException;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -85,9 +87,24 @@ class UserController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            /** @var \Symfony\Component\HttpFoundation\File\UploadedFile $file */
+            $file = $form->get('image')->getData();
+            $fileName = $this->generateUniqueFileName().'.jpg';
+
+            // Move the file to the directory where brochures are stored
+            try {
+
+                $file->move(
+                    $this->getParameter('user_photo_directory'),
+                    $fileName
+                );
+            } catch (FileException $e) {
+                throw new Exception('you loh');
+            }
+            $user->setImage($fileName);
             $this->getDoctrine()->getManager()->flush();
 
-            return $this->redirectToRoute('user_index', [
+            return $this->redirectToRoute('home', [
                 'id' => $user->getId(),
             ]);
         }
@@ -114,9 +131,6 @@ class UserController extends AbstractController
     /**
      * @return string
      */
-
-
-
     private function generateUniqueFileName()
     {
         return md5(uniqid());

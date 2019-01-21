@@ -1,54 +1,47 @@
 {% extends 'base.html.twig' %}
 {% block body %}
-    <header class="masthead" style="background-image: url('/public/img/home-bg.jpg')">
-        <div class="overlay"></div>
-        <div class="container">
-            <div class="row">
-                <div class="col-lg-8 col-md-10 mx-auto">
-                    <div class="site-heading">
-                        <h1>Maybe I add the text</h1>
-                        <span class="subheading">and here</span>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </header>
-
-
-    <!-- Main Content -->
+<header class="masthead" style="background-image: url('/public/img/home-bg.jpg')">
+    <div class="overlay"></div>
     <div class="container">
         <div class="row">
             <div class="col-lg-8 col-md-10 mx-auto">
-                {% for post in posts %}
-                    {%  if loop.index < 6 %}
-                        <div class="post-preview">
-                            <a href="{{ path('post_show', {'id': post.id, 'user_id': post.user.id}) }}">
-                                <h2 class="post-title">
-                                    {{ post.header }}
-                                </h2>
-                                <h3 class="post-subtitle">
-                                    {{ post.body }}
-                                </h3>
-                            </a>
-                            <p class="post-meta">Posted by
-                                <a href = "{{ path('user_show', {'id': post.user.id}) }}">{{ post.author }}</a>
-                                on {{ post.insDateTime|date("m/d/Y") }}</p>
-                            {{ post.tags }}
-                        </div>
-                    {% endif %}
-                {% else %}
-                    <tr>
-                        <td colspan="6">no records found</td>
-                    </tr>
-                {% endfor %}
-
-                <hr>
-                <!-- Pager -->
-                <div class="clearfix">
-                    <a class="btn btn-primary float-right" href="#">Older Posts &rarr;</a>
+                <div class="site-heading">
+                    <h1>Maybe I add the text</h1>
+                    <span class="subheading">and here</span>
                 </div>
             </div>
         </div>
     </div>
-{% endblock %}
+</header>
+
+
+<!-- Main Content -->
+<div class="container">
+    <div class="row">
+        <div class="col-lg-8 col-md-10 mx-auto">
+            {% for post in posts %}
+            <div class="post-preview">
+                <a href="{{ path('post_show', {'id': post.id, 'user_id': post.user.id}) }}">
+                    <h2 class="post-title">
+                        {{ post.header | length > 50 ? post.header|slice(0, 50) ~ '...' : post.header }}
+                        </h2>
+                        <h3 class="post-subtitle">
+                        {{ post.body | length > 100 ? post.body|slice(0, 100) ~ '...' : post.body }}
+                        </h3>
+                        </a>
+                        <p class="post-meta">Posted by
+                        <a href = "{{ path('user_show', {'id': post.user.id}) }}">{{ post.user.name }}</a>
+                        on {{ post.insDateTime|date("m/d/Y") }}</p>
+                        {{ post.tags }}
+                        </div>
+                        {% else %}
+                        <tr>
+                            <td colspan="6">no records found</td>
+                        </tr>
+                        {% endfor %}
+
+                        <hr>
+            </div>
+        </div>
+        {% endblock %}
 

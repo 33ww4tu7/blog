@@ -43,5 +43,5 @@ security:
 
     access_control:
         - { path: ^/admin, roles: ROLE_ADMIN }
-       # - { path: ^/bloger, roles: ROLE_BLOGGER }
-        - { path: ^/authorized, roles: ROLE_USER}
+        - { path: ^/new, roles: ROLE_BLOGGER }
+        #- { path: ^/authorized, roles: ROLE_USER}

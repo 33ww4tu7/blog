@@ -19,9 +19,8 @@ class UserType extends AbstractType
             ->add('surname', null, ['attr' => [
                 'class' => 'form-control', 'placeholder' => 'Surname', "rows" => "15"
             ]])
-            ->add('image', FileType::class,['data_class' => null, 'attr' => [
-                'class' => 'form-control', 'placeholder' => 'Image', "rows" => "15"
-            ]])
+            ->add('image', FileType::class,['data_class' => null,
+            ])
         ;
     }
 

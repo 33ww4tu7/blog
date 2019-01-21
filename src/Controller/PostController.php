@@ -2,23 +2,15 @@
 
 namespace App\Controller;
 
-use App\Entity\Post;
-use App\Entity\User;
+use App\Entity\Post;;
 use App\Form\PostType;
 use App\Repository\PostRepository;
-use Doctrine\ORM\Mapping\Id;
-use phpDocumentor\Reflection\Types\String_;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\Form\Extension\Core\Type\SubmitType;
-use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\HttpFoundation\File\Exception\FileException;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
-
 
 
 class PostController extends AbstractController
@@ -27,7 +19,18 @@ class PostController extends AbstractController
 
     public function __construct(PostRepository $posts)
     {
-        $this->posts=$posts;
+        $this->posts = $posts;
+    }
+
+    /**
+     * @Route("/all", name="post_all", methods={"GET","POST"})
+     */
+
+    public function index(PostRepository $postRepository): Response
+    {
+        return $this->render('post/all.html.twig', [
+            'posts' => array_reverse($postRepository->findAll()),
+        ]);
     }
 
     /**
@@ -36,8 +39,8 @@ class PostController extends AbstractController
     public function new(Request $request): Response
     {
         $post = new Post();
-        $post -> setAuthor( $this->getUser() -> getName());
-        $post -> setUser($this->getUser());
+        $post->setAuthor($this->getUser()->getName());
+        $post->setUser($this->getUser());
 
         $form = $this->createForm(PostType::class);
         $form->handleRequest($request);
@@ -45,7 +48,7 @@ class PostController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             /** @var \Symfony\Component\HttpFoundation\File\UploadedFile $file */
             $file = $form->get('image')->getData();
-            $fileName = $this->generateUniqueFileName().'.jpg';
+            $fileName = $this->generateUniqueFileName() . '.jpg';
             try {
 
                 $file->move(
@@ -96,7 +99,7 @@ class PostController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             /** @var \Symfony\Component\HttpFoundation\File\UploadedFile $file */
             $file = $form->get('image')->getData();
-            $fileName = $this->generateUniqueFileName().'.jpg';
+            $fileName = $this->generateUniqueFileName() . '.jpg';
             try {
 
                 $file->move(
@@ -118,7 +121,6 @@ class PostController extends AbstractController
         }
 
 
-
         return $this->render('post/edit.html.twig', [
             'post' => $post,
             'form' => $form->createView(),
@@ -131,7 +133,7 @@ class PostController extends AbstractController
      */
     public function delete(Request $request, Post $post): Response
     {
-        if ($this->isCsrfTokenValid('delete'.$post->getId(), $request->request->get('_token'))) {
+        if ($this->isCsrfTokenValid('delete' . $post->getId(), $request->request->get('_token'))) {
             $entityManager = $this->getDoctrine()->getManager();
             $entityManager->remove($post);
             $entityManager->flush();

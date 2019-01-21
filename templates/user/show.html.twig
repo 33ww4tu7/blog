@@ -32,15 +32,15 @@
                     <div class="post-preview">
                         <a href="{{ path('post_show', {'id': post.id, 'user_id': post.user.id}) }}">
                             <h2 class="post-title">
-                                {{ post.header }}
+                                {{ post.header | length > 50 ? post.header|slice(0, 50) ~ '...' : post.header}}
                             </h2>
                             <h3 class="post-subtitle">
-                                {{ post.body }}
+                                {{ post.body | length > 100 ? post.body|slice(0, 100) ~ '...' : post.body }}
                             </h3>
                         </a>
                         <p class="post-meta">Posted by
-                            <a href="{{ path('user_show', {'id': post.user.id}) }}">{{ post.author }}</a>
-                            on September 24, 2018</p>
+                            <a href="{{ path('user_show', {'id': post.user.id}) }}">{{ post.user.name }}</a>
+                            on {{ post.insDateTime|date("m/d/Y") }}</p>
                         {{ post.tags }}
                     </div>
                 {% else %}
@@ -52,7 +52,6 @@
                 <hr>
                 <!-- Pager -->
                 <div class="clearfix">
-                    <a class="btn btn-primary float-right" href="#">Older Posts &rarr;</a>
                 </div>
             </div>
         </div>
